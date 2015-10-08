@@ -2,17 +2,24 @@
 
 class Archive{
 
-	private $uploadDir = '/uploads/';
+	private static $uploadDir = '/uploads';
 
-	public static function all($dirName = null, $uploadDir = null)
+	public static function all($dir = null, $path = null)
 	{
-		$files = array_diff(scandir($uploadDir.$dirName), ['.', '..']);
+		if(!isset($path)) {
+			$path = __DIR__.self::$uploadDir;
+		}
+		if(!is_dir($path)) {
+			return "Pasta não encontrada!";
+		}
+		$files = array_diff(scandir($path.'/'.$dir), ['.', '..']);
+		
 		return json_encode($files);
 	}
 
-	public static function store($file, $uploadDir = null)
+	public static function store($file, $path = null)
 	{
-		$uploadfile = $uploadDir.basename($file['name']);
+		$uploadfile = $path.basename($file['name']);
 
 		if (move_uploaded_file($file['tmp_name'], $uploadfile)) {
 		    return "Arquivo válido e enviado com sucesso.\n";
@@ -30,14 +37,15 @@ class Archive{
 		}
 	}
 
-	public static function newFolder($dirName, $uploadDir = null)
+	public static function newFolder($dir, $path = null)
 	{
-		return mkdir($uploadDir.$dirName);
+		return mkdir($path.$dir);
 	}
 
 }
 
 // echo Archive::store($_FILES['arquivo'], $uploadDir);
 // echo Archive::burn($uploadDir.'bla.jpg');
-// echo Archive::all($uploadDir);
+echo Archive::all('','uploads/test');
+// echo __DIR__;
 // echo Archive::newFolder('folder', $uploadDir);

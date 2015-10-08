@@ -7,9 +7,6 @@
 		<label for='arquivo'>Arquivo:</label>
 		<input type='file' name='arquivo' id='arquivo'/>
 		<br/>
-		<label for='nome'>Nome:</label>
-		<input type='text' name='nome' id='nome'/>
-		<br/>
 		<input type='submit' value='Submit'>
 	</form>
 </body>
