@@ -13,7 +13,7 @@ class Archive{
 			return "Pasta não encontrada!";
 		}
 		$files = array_diff(scandir($path.'/'.$dir), ['.', '..']);
-		
+
 		return json_encode($files);
 	}
 
@@ -39,6 +39,9 @@ class Archive{
 
 	public static function newFolder($dir, $path = null)
 	{
+		if(!isset($path)) {
+			$path = __DIR__.self::$uploadDir;
+		}	
 		return mkdir($path.$dir);
 	}
 
@@ -46,6 +49,5 @@ class Archive{
 
 // echo Archive::store($_FILES['arquivo'], $uploadDir);
 // echo Archive::burn($uploadDir.'bla.jpg');
-echo Archive::all('','uploads/test');
-// echo __DIR__;
+// echo Archive::all();
 // echo Archive::newFolder('folder', $uploadDir);
