@@ -1,26 +1,129 @@
 $(document).ready(function(){
 
+	var listFiles = function(data){
+		var container = $('#files'),
+			fileElement,
+			fileUrl;
+
+		for(var k in data) {
+			// fileIcon = getFileIcon(data[k]);
+			var urlArr = window.location.href.split('archive/');
+
+			if(urlArr.lenght < 2){
+				alert('Algum erro ocorreu! Mantenha a calma.');
+				return;
+			} else {
+				fileUrl = 'uploads'+urlArr[1]+'/'+data[k];
+				fileIcon = 'glyphicon-file';
+				fileElement = $('<tr/>').append(
+					$('<td/>').append(
+						$('<span/>', {'class': 'glyphicon', 'aria-hidden' : true}).addClass(fileIcon)
+					).append(
+						$('<a/>', {'href' : fileUrl}).text(data[k])
+					)
+				);	
+
+				container.append(fileElement);
+
+				// getFileIcon(data[k], function(fileIcon){
+				// 	console.log('oi');
+				// 	console.log(fileIcon);
+				// 	fileElement = $('<tr/>').append(
+				// 		$('<td/>').append(
+				// 			$('<span/>', {'class': 'glyphicon', 'aria-hidden' : true}).addClass(fileIcon)
+				// 		).append(
+				// 			$('<a/>', {'href' : fileUrl}).text(data[k])
+				// 		)
+				// 	);	
+				// 	container.append(fileElement);
+				// });
+			}
+		}
+	}
+
+	// var getFileIcon = function(fileName, callback){
+	// 	var imageTypes = ['jpg','jpeg','png','gif','tif','jp2','psd','svg'],
+	// 		documentTypes = ['txt','rtf','odt','pdf','doc','docx','csv','ppt','xls'],
+	// 		videoTypes = ['mpg','mp4','wmv','mov','flv'],
+	// 		audioTypes = ['mp3','wav','wma'],
+	// 		iconName;
+
+	// 	var arr = fileName.split('.');
+	// 	extension = arr[ arr.length - 1 ];
+
+	// 	if(imageTypes.indexOf(extension) > -1) {
+	// 		callback('glyphicon-picture');
+	// 	} else if(documentTypes.indexOf(extension) > -1) {
+	// 		callback('glyphicon-file');
+	// 	} else if(videoTypes.indexOf(extension) > -1) {
+	// 		callback('glyphicon-film');
+	// 	} else if(audioTypes.indexOf(extension) > -1) {
+	// 		callback('glyphicon-music');
+	// 	} else {
+	// 		var url = window.location.href.split('archive/');
+	// 		url = url[0]+'archive/archivist/?url=uploads/'+url[1]+fileName;
+	// 		$.ajax({
+	// 			dataType: 'json',
+ //        		contentType: 'application/json; charset=UTF-8',
+	// 			method: 'get',
+	// 			url: url,
+	// 			success: function(data, textStatus){
+	// 				if(data == 'true'){
+	// 					callback('glyphicon-folder-close');
+	// 				}
+	// 				else{
+	// 					callback('glyphicon-file');
+	// 				}
+	// 			},
+	// 			error: function(jqXHR){
+	// 				callback('glyphicon-file');
+	// 			}
+	// 		});
+	// 	}
+
+	// }
+
 	$.ajax({
-		dataType: "json",
-        contentType: "application/json; charset=UTF-8",
+		dataType: 'json',
+        contentType: 'application/json; charset=UTF-8',
 		method: 'post',
 		url: 'archivist/listar',
-		success: function(data, textStatus, XML){
-			// var container = $('#files'),
-			// 	file;
-
-			console.log(data)
-			console.log(textStatus)
-			console.log(XML)
-
-			for(var k in data) {
-			   console.log(k+' => '+data[k]);
+		success: function(data, textStatus){
+			if(textStatus !== 'success'){
+				alert('Algo errado não está certo.');
+				return;
 			}
+
+			listFiles(data);
 		},
 		error: function(jqXHR){
 			console.log(jqXHR);
 			alert('deu ruim');
 		}
+	});
+
+	$(this).on('submit', 'form', function(e){
+		e.preventDefault();
+
+		var form = $(this),
+			url = form.attr('action');
+
+		$.ajax({
+			dataType: 'json',
+	        contentType: 'application/json; charset=UTF-8',
+			method: 'post',
+			url: url,
+			data: form.serialize(),
+			success: function(data, textStatus){
+				alert(data);
+			},
+			error: function(jqXHR){
+				console.log(jqXHR);
+				alert('deu ruim');
+			}
+		});
+
+		return false;
 	});
 
 });

@@ -26,7 +26,7 @@ class Archive{
 		if (move_uploaded_file($file['tmp_name'], $uploadfile)) {
 		    return "Arquivo válido e enviado com sucesso.\n";
 		} else {
-		    return "Possível ataque de upload de arquivo!\n";
+		    return "Possível ataque de envio de arquivo!\n";
 		}
 	}
 
@@ -45,6 +45,11 @@ class Archive{
 			$path = __DIR__.self::$uploadDir;
 		}	
 		return mkdir($path.$dir);
+	}
+
+	public static function isFolder($path)
+	{
+		return json_encode(is_dir($path));
 	}
 
 }

@@ -9,13 +9,13 @@
 </head>
 <body>
 	<div class='container'>
-		<form action='archive' method='post' enctype='multipart/form-data'>
+		<form action='archivist/store' method='post' enctype='multipart/form-data'>
 			<div class='form-group'>
 				<label for='arquivo' class='control-label'>Arquivo:</label>
 				<input type='file' name='arquivo' id='arquivo' class='form-control'/>
 			</div>
 			<div class='form-group'>
-				<input type='submit' value='Submit' class='btn'>
+				<input type='submit' value='Submit' class='btn' id='submit'>
 			</div>
 		</form>
 

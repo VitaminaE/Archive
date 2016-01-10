@@ -12,28 +12,17 @@ $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
 
 if(count($request) > 0){
 
-  if($request[0] === 'listar'){
-    echo Archive::all();
-  }
+	if($method === 'GET'){
+		echo Archive::isFolder($_GET['url']);
+	}
+	else if ($method === 'POST'){
+		if($request[0] === 'listar'){
+			echo Archive::all();
+		}
 
-  if($request[0] === 'store'){
-    return Archive::store($_FILES['arquivo']);
-  }
+		if($request[0] === 'store'){
+			return Archive::store( $_FILES['arquivo'] );
+		}
+	}
 
 }
-
-
-
-// switch ($method) {
-//   case 'POST':
-    
-//     //
-//     break;
-//   case 'GET':
-//   	// 
-//   echo index.php;
-//     break;
-//   default:
-//     header("Location: ".$base_url);
-//     break;
-// }
