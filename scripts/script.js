@@ -102,7 +102,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$(this).on('submit', 'form', function(e){
+	$('form').on('submit', function(e){
 		e.preventDefault();
 
 		var form = $(this),
