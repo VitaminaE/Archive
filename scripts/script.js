@@ -1,5 +1,60 @@
 $(document).ready(function(){
 
+	$.ajax({
+		dataType: 'json',
+        contentType: 'application/json; charset=UTF-8',
+		method: 'get',
+		url: 'archivist/listar',
+		success: function(response, textStatus){
+			if(textStatus !== 'success'){
+				alert('Algo errado não está certo.');
+				return;
+			}
+			if(response.type === 'folder'){
+				listFiles(response.data);
+			}
+			if(response.type === 'file'){
+				window.location.href = window.location.href + response.data;
+			}
+		},
+		error: function(jqXHR, textStatus){
+			console.log(textStatus);
+			console.log(jqXHR);
+			alert('deu ruim aqui');
+		}
+	});
+
+	$(this).on('click', 'a', function(e){
+		e.preventDefault();
+
+		var data = {path: $(this).attr('href')};
+
+		$.ajax({
+			dataType: 'json',
+	        contentType: 'application/json; charset=UTF-8',
+			method: 'get',
+			data: data,
+			url: 'archivist/listar/',
+			success: function(response, textStatus){
+				if(textStatus !== 'success'){
+					alert('Algo errado não está certo.');
+					return;
+				}
+				if(response.type === 'folder'){
+					listFiles(response.data);
+				}
+				if(response.type === 'file'){
+					window.location.href = window.location.href + response.data;
+				}
+			},
+			error: function(jqXHR, textStatus){
+				console.log(textStatus);
+				console.log(jqXHR);
+				alert('deu ruim');
+			}
+		});
+	});
+
 	var listFiles = function(data){
 		var container = $('#files'),
 			fileElement,
@@ -13,13 +68,13 @@ $(document).ready(function(){
 				alert('Algum erro ocorreu! Mantenha a calma.');
 				return;
 			} else {
-				fileUrl = 'uploads'+urlArr[1]+'/'+data[k];
+				fileUrl = urlArr[1]+'/'+data[k];
 				fileIcon = 'glyphicon-file';
 				fileElement = $('<tr/>').append(
 					$('<td/>').append(
 						$('<span/>', {'class': 'glyphicon', 'aria-hidden' : true}).addClass(fileIcon)
 					).append(
-						$('<a/>', {'href' : fileUrl}).text(data[k])
+						$('<a/>', {'href' : fileUrl}).text(" "+data[k])
 					)
 				);	
 
@@ -39,6 +94,8 @@ $(document).ready(function(){
 				// });
 			}
 		}
+
+		// $('#file').html(newContent);
 	}
 
 	// var getFileIcon = function(fileName, callback){
@@ -83,25 +140,6 @@ $(document).ready(function(){
 
 	// }
 
-	$.ajax({
-		dataType: 'json',
-        contentType: 'application/json; charset=UTF-8',
-		method: 'post',
-		url: 'archivist/listar',
-		success: function(data, textStatus){
-			if(textStatus !== 'success'){
-				alert('Algo errado não está certo.');
-				return;
-			}
-
-			listFiles(data);
-		},
-		error: function(jqXHR){
-			console.log(jqXHR);
-			alert('deu ruim');
-		}
-	});
-
 	$('form').on('submit', function(e){
 		e.preventDefault();
 
@@ -109,13 +147,15 @@ $(document).ready(function(){
 			url = form.attr('action');
 
 		$.ajax({
-			dataType: 'json',
-	        contentType: 'application/json; charset=UTF-8',
+			// dataType: 'json',
+	  //       contentType: 'application/json; charset=UTF-8',
 			method: 'post',
 			url: url,
 			data: form.serialize(),
-			success: function(data, textStatus){
-				alert(data);
+			success: function(response, textStatus){
+				// console.log(textStatus);
+				// console.log(response);
+				// alert(response);
 			},
 			error: function(jqXHR){
 				console.log(jqXHR);
@@ -123,7 +163,7 @@ $(document).ready(function(){
 			}
 		});
 
-		return false;
+		// return false;
 	});
 
 });

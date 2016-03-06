@@ -1,22 +1,17 @@
 <?php
 
-session_start();
+class Archive {
 
-class Archive{
+	private static $uploadDir = 'uploads';
 
-	private static $uploadDir = '/uploads';
-
-	public static function all($dir = null, $path = null)
+	public static function all($path = null)
 	{
-		if(!isset($path)) {
-			$path = __DIR__.self::$uploadDir;
-		}
+		$path = __DIR__.'/'.self::$uploadDir.'/'.$path;
 		if(!is_dir($path)) {
 			return "Pasta não encontrada!";
 		}
-		$files = array_diff(scandir($path.'/'.$dir), ['.', '..']);
-
-		return json_encode($files);
+		$files = array_diff(scandir($path), ['.', '..']);
+		return $files;
 	}
 
 	public static function store($file, $path = null)
@@ -39,22 +34,36 @@ class Archive{
 		}
 	}
 
+	public static function open($path = null)
+	{
+		if (file_exists(__DIR__.'/'.self::$uploadDir.'/'.$path)) {
+			if (is_dir($path)) {
+				return self::all($path);
+			}
+			return self::$uploadDir.$path;
+		} else {
+			return "Arquivo não encontrado.";
+		}
+	}
+
 	public static function newFolder($dir, $path = null)
 	{
-		if(!isset($path)) {
-			$path = __DIR__.self::$uploadDir;
+		if (!isset($path)) {
+			$path = __DIR__.'/'.self::$uploadDir;
 		}	
 		return mkdir($path.$dir);
 	}
 
 	public static function isFolder($path)
 	{
-		return json_encode(is_dir($path));
+		$path = __DIR__.'/'.self::$uploadDir.'/'.$path;
+		return is_dir($path);
 	}
 
 }
 
 // echo Archive::store($_FILES['arquivo']);
 // echo Archive::burn($uploadDir.'bla.jpg');
-// echo Archive::all();
+// echo Archive::all('test');
 // echo Archive::newFolder('folder', $uploadDir);
+// echo Archive::open('.gitignore');

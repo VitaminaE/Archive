@@ -1,5 +1,7 @@
 <?php 
 
+session_start();
+
 require_once 'archive.php';
 
 // $base_url = "http://127.0.0.1/devdesktop/archive/";
@@ -13,16 +15,36 @@ $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
 if(count($request) > 0){
 
 	if($method === 'GET'){
-		echo Archive::isFolder($_GET['url']);
-	}
-	else if ($method === 'POST'){
 		if($request[0] === 'listar'){
-			echo Archive::all();
+			array_key_exists('path', $_GET)? $path = $_GET['path'] : $path = null;
+			if(Archive::isFolder($path)){
+				$reponse = [
+					'type' => 'folder',
+					'data' => Archive::all($path)
+				];
+				echo json_encode($reponse);
+			} else {
+				$reponse = [
+					'type' => 'file',
+					'data' => Archive::open($path)
+				];
+				echo json_encode($reponse);
+			}
 		}
-
+		if($request[0] === 'folder'){
+			echo Archive::isFolder($_GET['url']);
+		}
+	}
+	else if(isset($_POST) && $method === 'POST'){
 		if($request[0] === 'store'){
-			return Archive::store( $_FILES['arquivo'] );
+			if(count($_FILES) < 1){
+				return "O campo arquivo não pode ser vazio.";
+			}
+			return Archive::store($_FILES['arquivo']);
 		}
+	}
+	else{
+		return "Algum error ocorreu. Não entre em pânico! Nossa equipe de macacos malabaristas já foi contactada e estão trabalhando no problema.";
 	}
 
 }
