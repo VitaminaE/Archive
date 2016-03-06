@@ -36,14 +36,10 @@ class Archive {
 
 	public static function open($path = null)
 	{
-		if (file_exists(__DIR__.'/'.self::$uploadDir.'/'.$path)) {
-			if (is_dir($path)) {
-				return self::all($path);
-			}
-			return self::$uploadDir.$path;
-		} else {
-			return "Arquivo não encontrado.";
+		if (is_dir($path)) {
+			return self::all($path);
 		}
+		return self::$uploadDir.$path;
 	}
 
 	public static function newFolder($dir, $path = null)

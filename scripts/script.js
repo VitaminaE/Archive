@@ -27,7 +27,8 @@ $(document).ready(function(){
 	$(this).on('click', 'a', function(e){
 		e.preventDefault();
 
-		var data = {path: $(this).attr('href')};
+		var path = $(this).attr('href'),
+			data = {path : path};
 
 		$.ajax({
 			dataType: 'json',
@@ -41,7 +42,7 @@ $(document).ready(function(){
 					return;
 				}
 				if(response.type === 'folder'){
-					listFiles(response.data);
+					listFiles(response.data, path);
 				}
 				if(response.type === 'file'){
 					window.location.href = window.location.href + response.data;
@@ -55,47 +56,48 @@ $(document).ready(function(){
 		});
 	});
 
-	var listFiles = function(data){
-		var container = $('#files'),
+	var listFiles = function(data, path){
+		var container = $('#files').empty(),
 			fileElement,
 			fileUrl;
 
-		for(var k in data) {
-			// fileIcon = getFileIcon(data[k]);
-			var urlArr = window.location.href.split('archive/');
-
-			if(urlArr.lenght < 2){
-				alert('Algum erro ocorreu! Mantenha a calma.');
-				return;
-			} else {
-				fileUrl = urlArr[1]+'/'+data[k];
-				fileIcon = 'glyphicon-file';
-				fileElement = $('<tr/>').append(
-					$('<td/>').append(
-						$('<span/>', {'class': 'glyphicon', 'aria-hidden' : true}).addClass(fileIcon)
-					).append(
-						$('<a/>', {'href' : fileUrl}).text(" "+data[k])
-					)
-				);	
-
-				container.append(fileElement);
-
-				// getFileIcon(data[k], function(fileIcon){
-				// 	console.log('oi');
-				// 	console.log(fileIcon);
-				// 	fileElement = $('<tr/>').append(
-				// 		$('<td/>').append(
-				// 			$('<span/>', {'class': 'glyphicon', 'aria-hidden' : true}).addClass(fileIcon)
-				// 		).append(
-				// 			$('<a/>', {'href' : fileUrl}).text(data[k])
-				// 		)
-				// 	);	
-				// 	container.append(fileElement);
-				// });
-			}
+		var urlArr = window.location.href.split('archive/');
+		if(urlArr.lenght < 2){
+			alert('Algum erro ocorreu! Mantenha a calma.');
+			return;
 		}
 
-		// $('#file').html(newContent);
+		for(var k in data) {
+			// fileIcon = getFileIcon(data[k]);
+			if(typeof path !== typeof undefined){
+				fileUrl = urlArr[1]+path+'/'+data[k];
+			} else {
+				fileUrl = urlArr[1]+'/'+data[k];
+			}
+			fileIcon = 'glyphicon-file';
+			fileElement = $('<tr/>').append(
+				$('<td/>').append(
+					$('<span/>', {'class': 'glyphicon', 'aria-hidden' : true}).addClass(fileIcon)
+				).append(
+					$('<a/>', {'href' : fileUrl}).text(" "+data[k])
+				)
+			);	
+
+			container.append(fileElement);
+
+			// getFileIcon(data[k], function(fileIcon){
+			// 	console.log('oi');
+			// 	console.log(fileIcon);
+			// 	fileElement = $('<tr/>').append(
+			// 		$('<td/>').append(
+			// 			$('<span/>', {'class': 'glyphicon', 'aria-hidden' : true}).addClass(fileIcon)
+			// 		).append(
+			// 			$('<a/>', {'href' : fileUrl}).text(data[k])
+			// 		)
+			// 	);	
+			// 	container.append(fileElement);
+			// });
+		}
 	}
 
 	// var getFileIcon = function(fileName, callback){
