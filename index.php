@@ -9,7 +9,7 @@
 </head>
 <body>
 	<div class='container'>
-		<form action='#/archivist/store' method='post' enctype='multipart/form-data'>
+		<form action='archivist/store' method='post' enctype='multipart/form-data'>
 			<div class='form-group'>
 				<label for='arquivo' class='control-label'>Arquivo:</label>
 				<input type='file' name='arquivo' id='arquivo' class='form-control'/>
@@ -19,10 +19,13 @@
 			</div>
 		</form>
 
+		<ol class='breadcrumb' style='margin-bottom: 5px'></ol>
+
 		<table id='files' class='table table-hover'>
 			<thead>
 				<th>Name</th>
 			</thead>
+			<tbody></tbody>
 		</table>
 	</div>
 

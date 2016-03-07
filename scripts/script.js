@@ -11,6 +11,7 @@ $(document).ready(function(){
 				return;
 			}
 			if(response.type === 'folder'){
+				updateBreadcumb('/');
 				listFiles(response.data);
 			}
 			if(response.type === 'file'){
@@ -42,6 +43,7 @@ $(document).ready(function(){
 					return;
 				}
 				if(response.type === 'folder'){
+					updateBreadcumb(path);
 					listFiles(response.data, path);
 				}
 				if(response.type === 'file'){
@@ -56,8 +58,31 @@ $(document).ready(function(){
 		});
 	});
 
+	var updateBreadcumb = function(path){
+		var breadcumb = $('.breadcrumb').empty();
+		console.log(path);
+		folders = path.split('/');
+		for(var folder in folders){
+			var upperFolders = path.split('/'+folders[folder]),
+				newLink = $('<li/>').append(
+					$('<a/>', {'href': upperFolders[0]+'/'+folders[folder]}).text(folders[folder])
+				);
+			console.log(upperFolders);
+			if(folder == 0){
+				newLink.children('a').text('root');
+			}	
+			if(folders[folder] === folders[folders.length - 1]){
+				newLink.addClass('active');
+			}
+			if(folders[folder] !== '' || folder == 0){
+				breadcumb.append(newLink);
+			}
+			console.log(newLink);
+		}
+	}
+
 	var listFiles = function(data, path){
-		var container = $('#files').empty(),
+		var container = $('#files > tbody').empty(),
 			fileElement,
 			fileUrl;
 
@@ -149,23 +174,24 @@ $(document).ready(function(){
 			url = form.attr('action');
 
 		$.ajax({
-			// dataType: 'json',
-	  //       contentType: 'application/json; charset=UTF-8',
+			dataType: 'json',
+	        contentType: 'application/json; charset=UTF-8',
 			method: 'post',
 			url: url,
 			data: form.serialize(),
 			success: function(response, textStatus){
-				// console.log(textStatus);
-				// console.log(response);
-				// alert(response);
+				console.log(textStatus);
+				console.log(response);
+				alert(response);
 			},
-			error: function(jqXHR){
+			error: function(jqXHR, textStatus){
+				console.log(textStatus);
 				console.log(jqXHR);
-				alert('deu ruim');
+				alert('deu ruim form');
 			}
 		});
 
-		// return false;
+		return false;
 	});
 
 });

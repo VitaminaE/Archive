@@ -5,7 +5,7 @@ session_start();
 require_once 'archive.php';
 
 // $base_url = "http://127.0.0.1/devdesktop/archive/";
-$base_url = "http://127.0.0.1/devdesktop/archive/archivist/";
+// $base_url = "http://127.0.0.1/devdesktop/archive/archivist/";
 $method = $_SERVER['REQUEST_METHOD'];
 $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
 // $request = @$_SERVER['PATH_INFO'];
@@ -13,7 +13,6 @@ $request = explode("/", substr(@$_SERVER['PATH_INFO'], 1));
 // var_dump($request);
 
 if(count($request) > 0){
-
 	if($method === 'GET'){
 		if($request[0] === 'listar'){
 			array_key_exists('path', $_GET)? $path = $_GET['path'] : $path = null;
@@ -44,7 +43,6 @@ if(count($request) > 0){
 		}
 	}
 	else{
-		return "Algum error ocorreu. Não entre em pânico! Nossa equipe de macacos malabaristas já foi contactada e estão trabalhando no problema.";
+		return "Algum erro ocorreu. Não entre em pânico! Nossa equipe de macacos malabaristas já foi contactada e está trabalhando no problema.";
 	}
-
 }

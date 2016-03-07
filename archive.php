@@ -16,9 +16,9 @@ class Archive {
 
 	public static function store($file, $path = null)
 	{
-		$uploadfile = $path.basename($file['name']);
+		$uploadFile = $path.basename($file['name']);
 
-		if (move_uploaded_file($file['tmp_name'], $uploadfile)) {
+		if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
 		    return "Arquivo válido e enviado com sucesso.\n";
 		} else {
 		    return "Possível ataque de envio de arquivo!\n";
