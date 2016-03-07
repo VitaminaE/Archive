@@ -1,41 +1,11 @@
 $(document).ready(function(){
 
-	$.ajax({
-		dataType: 'json',
-        contentType: 'application/json; charset=UTF-8',
-		method: 'get',
-		url: 'archivist/listar',
-		success: function(response, textStatus){
-			if(textStatus !== 'success'){
-				alert('Algo errado não está certo.');
-				return;
-			}
-			if(response.type === 'folder'){
-				updateBreadcumb('/');
-				listFiles(response.data);
-			}
-			if(response.type === 'file'){
-				window.location.href = window.location.href + response.data;
-			}
-		},
-		error: function(jqXHR, textStatus){
-			console.log(textStatus);
-			console.log(jqXHR);
-			alert('deu ruim aqui');
-		}
-	});
-
-	$(this).on('click', 'a', function(e){
-		e.preventDefault();
-
-		var path = $(this).attr('href'),
-			data = {path : path};
-
+	var getFiles = function(path){
 		$.ajax({
 			dataType: 'json',
 	        contentType: 'application/json; charset=UTF-8',
 			method: 'get',
-			data: data,
+			data: {path: path},
 			url: 'archivist/listar/',
 			success: function(response, textStatus){
 				if(textStatus !== 'success'){
@@ -56,18 +26,17 @@ $(document).ready(function(){
 				alert('deu ruim');
 			}
 		});
-	});
+	}
 
 	var updateBreadcumb = function(path){
 		var breadcumb = $('.breadcrumb').empty();
-		console.log(path);
 		folders = path.split('/');
 		for(var folder in folders){
 			var upperFolders = path.split('/'+folders[folder]),
 				newLink = $('<li/>').append(
 					$('<a/>', {'href': upperFolders[0]+'/'+folders[folder]}).text(folders[folder])
 				);
-			console.log(upperFolders);
+
 			if(folder == 0){
 				newLink.children('a').text('root');
 			}	
@@ -77,16 +46,16 @@ $(document).ready(function(){
 			if(folders[folder] !== '' || folder == 0){
 				breadcumb.append(newLink);
 			}
-			console.log(newLink);
 		}
 	}
 
 	var listFiles = function(data, path){
 		var container = $('#files > tbody').empty(),
 			fileElement,
-			fileUrl;
+			fileUrl,
+			urlArr;
 
-		var urlArr = window.location.href.split('archive/');
+		urlArr = window.location.href.split('archive/');
 		if(urlArr.lenght < 2){
 			alert('Algum erro ocorreu! Mantenha a calma.');
 			return;
@@ -105,6 +74,8 @@ $(document).ready(function(){
 					$('<span/>', {'class': 'glyphicon', 'aria-hidden' : true}).addClass(fileIcon)
 				).append(
 					$('<a/>', {'href' : fileUrl}).text(" "+data[k])
+				).append(
+					$('<button/>', {'class': 'btn btn-secondary', type: 'button'}).text('Burn').hide()
 				)
 			);	
 
@@ -123,6 +94,26 @@ $(document).ready(function(){
 			// 	container.append(fileElement);
 			// });
 		}
+	}
+
+	var store = function(form){
+		$.ajax({
+			dataType: 'json',
+	        contentType: 'application/json; charset=UTF-8',
+			method: 'post',
+			url: form.attr('action'),
+			data: form.serialize(),
+			success: function(response, textStatus){
+				console.log(textStatus);
+				console.log(response);
+				alert(response);
+			},
+			error: function(jqXHR, textStatus){
+				console.log(textStatus);
+				console.log(jqXHR);
+				alert('deu ruim form');
+			}
+		});
 	}
 
 	// var getFileIcon = function(fileName, callback){
@@ -167,31 +158,28 @@ $(document).ready(function(){
 
 	// }
 
+	// Faz a primeira requisição para listar os arquivos da pasta raiz
+	getFiles('');
+
+	$(this).on('click', 'a', function(e){
+		e.preventDefault();
+		getFiles($(this).attr('href'));
+	});
+
 	$('form').on('submit', function(e){
 		e.preventDefault();
-
-		var form = $(this),
-			url = form.attr('action');
-
-		$.ajax({
-			dataType: 'json',
-	        contentType: 'application/json; charset=UTF-8',
-			method: 'post',
-			url: url,
-			data: form.serialize(),
-			success: function(response, textStatus){
-				console.log(textStatus);
-				console.log(response);
-				alert(response);
-			},
-			error: function(jqXHR, textStatus){
-				console.log(textStatus);
-				console.log(jqXHR);
-				alert('deu ruim form');
-			}
-		});
-
+		store($(this));
 		return false;
+	});
+
+	$(this).on('mouseenter', 'td', function(){
+		$(this).children('button').show();
+		console.log($(this).children('button'));
+	});
+
+	$(this).on('mouseleave', 'td', function(){
+		$(this).children('button').hide();
+		console.log($(this).children('button'));
 	});
 
 });

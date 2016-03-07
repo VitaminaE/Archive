@@ -10,14 +10,13 @@ class Archive {
 		if(!is_dir($path)) {
 			return "Pasta não encontrada!";
 		}
-		$files = array_diff(scandir($path), ['.', '..']);
+		$files = array_diff(scandir($path), ['.', '..', '.gitignore']);
 		return $files;
 	}
 
 	public static function store($file, $path = null)
 	{
 		$uploadFile = $path.basename($file['name']);
-
 		if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
 		    return "Arquivo válido e enviado com sucesso.\n";
 		} else {
